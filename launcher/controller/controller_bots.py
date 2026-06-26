@@ -1,50 +1,59 @@
-# launcher/controller/controller_bots.py
-
-import subprocess
-import threading
-import tkinter as tk
-from tkinter import filedialog
 import os
-import psutil
-from bot.bot_runtime import run_bot
 import json
+import threading
+import psutil
+from tkinter import filedialog
+
+from launcher.features.bot_autocreate import create_bot_folder
+from launcher.bot.bot_loader import load_avatar
+from launcher.bot.bot_launcher import launch_bot
 
 
-class BotController:
+class BotsController:
     def __init__(self, main):
         self.main = main
         self.ui = main.ui
 
-    # ---------------------------------------------------------
-    # START BOT
-    # ---------------------------------------------------------
+    def create_bot(self):
+        name = self.ui.bots.new_bot_name.get().strip()
+        if not name:
+            self.ui.bots.show_status("Enter a bot name.")
+            return
+
+        create_bot_folder(name)
+        self.ui.bots.show_status(f"Bot '{name}' created.")
+        self.main.reload_bot_list()
+
     def start_bot(self):
         bot_name = self.ui.launcher.bot_selector.get()
-        cfg = self.main.settings.settings
+        settings = self.main.settings.settings
 
-        # Load behavior-only profile.json
-        profile_path = f"bots/{bot_name}/profile.json"
-        if os.path.exists(profile_path):
-            with open(profile_path, "r", encoding="utf8") as f:
-                behavior = json.load(f)
-        else:
-            behavior = {"Behavior": {}}
+        avatar_path = f"bots/{bot_name}/avatar.ini"
+        if not os.path.exists(avatar_path):
+            self.ui.launcher.log_launcher("Missing avatar.ini for bot.")
+            return
 
-        config = {
-            "bot_name": bot_name,
-            "server_ip": cfg["server"]["ip"],
-            "server_port": cfg["server"]["port"],
-            "settings": cfg,
-            "behavior": behavior["Behavior"]
+        avatar = load_avatar(avatar_path)
+
+        extra = {
+            "placeid": settings["launcher"]["place_id"],
+            "ip": settings["server"]["ip"],
+            "port": settings["server"]["port"],
+            "user": bot_name,
+            "id": "1",
+            "mship": "None"
         }
 
-        self.ui.launcher.log_launcher(f"Starting bot: {bot_name}")
+        version = settings["launcher"]["version"]
+        url = launch_bot(settings, avatar, version, extra)
 
-        threading.Thread(target=lambda: run_bot(config), daemon=True).start()
+        self.ui.launcher.log_launcher(f"Launching bot {bot_name}")
+        self.ui.launcher.log_launcher(f"Join URL: {url}")
 
-    # ---------------------------------------------------------
-    # STOP BOT
-    # ---------------------------------------------------------
+        threading.Thread(target=lambda: os.system(
+            f'"{settings["launcher"]["client_path"]}" -j "{url}"'
+        ), daemon=True).start()
+
     def stop_bot(self):
         self.ui.launcher.log_launcher("Stopping bot...")
 
@@ -58,26 +67,13 @@ class BotController:
 
         self.ui.launcher.log_launcher("Bot stopped.")
 
-    # ---------------------------------------------------------
-    # RESTART BOT
-    # ---------------------------------------------------------
     def restart_bot(self):
         self.stop_bot()
         self.start_bot()
 
-    # ---------------------------------------------------------
-    # FILE BROWSING
-    # ---------------------------------------------------------
     def browse_client_path(self):
         path = filedialog.askopenfilename(title="Select Roblox Client")
         if path:
             self.ui.launcher.client_path_var.set(path)
             self.main.settings.settings["launcher"]["client_path"] = path
-            self.main.save_settings()
-
-    def browse_joinscript(self):
-        path = filedialog.askopenfilename(title="Select JoinScript")
-        if path:
-            self.ui.launcher.joinscript_var.set(path)
-            self.main.settings.settings["launcher"]["joinscript_path"] = path
             self.main.save_settings()

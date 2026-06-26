@@ -1,17 +1,31 @@
 import tkinter as tk
 from settings import load_settings
-from ui.settings.settings_ui import SettingsUI
+from launcher.ui.ui_main import MainUI
 
 
-def main():
-    settings = load_settings()
+class MainApp:
+    def __init__(self):
+        self.settings = load_settings()
 
-    root = tk.Tk()
-    root.title("AI Bot Settings")
+        self.root = tk.Tk()
+        self.root.title("RAI Launcher")
 
-    SettingsUI(root, settings)
+        self.ui = MainUI(self.root, self)
 
-    root.mainloop()
+        self.ui.init_versions()
+        self.ui.init_bots()
+
+    def reload_bot_list(self):
+        self.ui.init_bots()
+
+    def save_settings(self):
+        from settings import save_settings
+        save_settings(self.settings.settings)
+
+    def run(self):
+        self.root.mainloop()
+
 
 if __name__ == "__main__":
-    main()
+    app = MainApp()
+    app.run()
