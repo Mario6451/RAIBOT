@@ -7,16 +7,20 @@ from settings import save_settings
 # Import tab modules
 from .general_tab import GeneralTab
 from .llm_tab import LLMTab
-from .training_tab import TrainingTab
 from .performance_tab import PerformanceTab
-from .training_stats_tab import TrainingStatsTab
 from .debug_tab import DebugTab
+
+# NEW TABS
+from .ai_behavior_tab import AIBehaviorTab
+from .ai_performance_tab import AIPerformanceTab
 
 
 class SettingsWindow:
-    def __init__(self, root, settings):
+    def __init__(self, root, settings, controller_ai=None, controller_bots=None):
         self.root = root
         self.settings = settings
+        self.controller_ai = controller_ai
+        self.controller_bots = controller_bots
 
         self._apply_auto_theme()
         self._apply_font()
@@ -27,17 +31,23 @@ class SettingsWindow:
         # Create tabs
         self.general_tab = GeneralTab(self.notebook, self.settings)
         self.llm_tab = LLMTab(self.notebook, self.settings)
-        self.training_tab = TrainingTab(self.notebook, self.settings)
         self.performance_tab = PerformanceTab(self.notebook, self.settings)
-        self.training_stats_tab = TrainingStatsTab(self.notebook)
+
+        # NEW AI TABS
+        self.ai_behavior_tab = AIBehaviorTab(self.notebook, controller_ai)
+        self.ai_performance_tab = AIPerformanceTab(self.notebook, controller_ai)
+
         self.debug_tab = DebugTab(self.notebook)
 
         # Add tabs to notebook
         self.notebook.add(self.general_tab.frame, text="General")
         self.notebook.add(self.llm_tab.frame, text="LLM")
-        self.notebook.add(self.training_tab.frame, text="Training")
         self.notebook.add(self.performance_tab.frame, text="Performance")
-        self.notebook.add(self.training_stats_tab.frame, text="Training Stats")
+
+        # NEW TAB LABELS
+        self.notebook.add(self.ai_behavior_tab, text="AI Behavior")
+        self.notebook.add(self.ai_performance_tab, text="AI Performance")
+
         self.notebook.add(self.debug_tab.frame, text="AI Debug")
 
         # Save button
@@ -49,15 +59,10 @@ class SettingsWindow:
 
     def _apply_auto_theme(self):
         style = ttk.Style()
-
-        # Use system theme
         try:
-            style.theme_use("vista")  # Windows-style tabs
+            style.theme_use("vista")
         except:
             style.theme_use("default")
-
-        # Auto light/dark based on OS
-        # (ttk automatically adapts on Windows 10/11)
 
     def _apply_font(self):
         self.root.option_add("*Font", "Segoe UI 10")
@@ -67,18 +72,15 @@ class SettingsWindow:
     # ---------------------------------------------------------
 
     def save_all(self):
-        # Save each tab
         self.general_tab.save()
         self.llm_tab.save()
-        self.training_tab.save()
         self.performance_tab.save()
 
-        # Write to disk
         save_settings(self.settings)
         print("[Settings] Saved successfully!")
 
     # ---------------------------------------------------------
-    # DEBUG LOG (called by AIBrain)
+    # DEBUG LOG
     # ---------------------------------------------------------
 
     def debug_log(self, text):
