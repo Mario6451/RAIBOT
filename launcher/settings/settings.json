@@ -1,0 +1,107 @@
+{
+    "launcher": {
+        "base_url": "http://www.rbolock.tk",
+        "rblxhub_path": "G:/random shit (G)/old roblox stuff/RBLXHUB",
+        "versions": "2012L,2013M,2014E,2014M,2015E,2015M,2016E,2016L,2017E,2019M,2020M",
+        "version": "2019M",
+        "client_path": "",
+        "place_id": "1818",
+        "joinscripts": {
+            "2012": "/game/join2012.php",
+            "2013": "/game/join2013.php",
+            "2014": "/game/join2014.php",
+            "2014M": "/game/join20142.php",
+            "2015": "/Game/joino2k.php",
+            "2015E": "/Game/joino2k.php",
+            "2015M": "/Game/joino2k.php",
+            "2016E": "/Game/joino2k.php",
+            "2016L": "/Game/join2017.php",
+            "2017E": "/Game/join2017.php",
+            "2019M": "/game/join2019.php",
+            "2020M": "/game/join2020.php"
+        },
+        "avatar_system": {
+            "2012": "legacy",
+            "2013": "legacy",
+            "2014": "legacy",
+            "2014M": "legacy",
+            "2015": "legacy",
+            "2015E": "legacy",
+            "2015M": "legacy",
+            "2016E": "legacy",
+            "2016L": "sigmabinary",
+            "2017E": "sigmabinary",
+            "2019M": "sigmabinary",
+            "2020M": "sigmabinary"
+        },
+        "join_parameters": {
+            "legacy": [
+                "placeid",
+                "ip",
+                "port",
+                "user",
+                "id",
+                "mship",
+                "head",
+                "torso",
+                "leftarm",
+                "rightarm",
+                "leftleg",
+                "rightleg",
+                "hat1id",
+                "hat2id",
+                "hat3id",
+                "shirtid",
+                "tshirtid",
+                "pantsid",
+                "faceid"
+            ],
+            "sigmabinary": [
+                "placeid",
+                "ip",
+                "port",
+                "user",
+                "id",
+                "mship",
+                "binary"
+            ]
+        }
+    },
+    "server": {
+        "ip": "127.0.0.1",
+        "port": 27015
+    },
+    "web_ui": {
+        "enabled": true,
+        "ip": "127.0.0.1",
+        "port": 5000
+    },
+    "performance": {
+        "tick_rate": 60,
+        "capture_fps": 24,
+        "pathfinding_grid_size": 64,
+        "logging_enabled": true
+    },
+    "training": {
+        "self_learning": true,
+        "imitation_learning": true,
+        "instruction_learning": true
+    },
+    "general": {
+        "bot_name": "RAI Bot",
+        "client_path": "",
+        "auto_launch": false,
+        "model": "microsoft/phi-4-mini-reasoning",
+        "model_endpoint": "http://localhost:1234/v1/chat/completions",
+        "default_exe_path": "",
+        "default_avatar": "",
+        "default_joinscript_url": "",
+        "rcc_ip": "127.0.0.1",
+        "rcc_port": 27015
+    },
+    "llm": {
+        "temperature": 0.8,
+        "max_tokens": 4096,
+        "system_prompt": "You are a Roblox player in the year 2016. You talk exactly like real Roblox kids from that era. Your grammar is casual, messy, and sometimes incorrect. You use short messages, quick reactions, and simple words. You never use emojis, modern slang, or anything that didn\u2019t exist in 2016. Your personality is friendly, chaotic, energetic, and easily excited. You say things like lol, xd, bruh, omg, wow, rip, rekt, pls, thx, noob. You sometimes trash-talk but only in a playful way. You act like a normal 2016 kid, not an adult. Your chat style: short messages (1\u20138 words), no emojis, no modern slang (no fr, cap, gyatt, rizz, etc.), only 2016 slang. Use simple reactions like 'lol what', 'wait', 'hold up', 'bro', 'wow', 'no way'. Behavior rules: stay in character as a 2016 Roblox player at all times, never mention AI, models, or anything modern. If someone insults you, respond like a 2016 kid (lol ok, bruh, no u, xd). If someone asks for help, respond simply (ok, coming, where u at). If someone says something confusing, respond like a kid (huh, what u mean). Movement/action interpretation: if someone says follow me, come here, attack him, jump, run, help, stop, wait, interpret them as in-game actions and respond with short confirmations like ok, coming, wait, on my way, k, hold up. Tone: casual, playful, slightly chaotic, never too serious, never too mature, never too modern. Always speak like a real 2016 Roblox player."
+    }
+}

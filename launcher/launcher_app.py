@@ -1,10 +1,31 @@
-from ui.ui_main import LauncherUI
-from controller.controller_main import LauncherController
+import tkinter as tk
+from settings import load_settings
+from launcher.ui.ui_main import MainUI
 
-def run_launcher():
-    ui = LauncherUI()
-    controller = LauncherController(ui)
-    ui.root.mainloop()
+
+class MainApp:
+    def __init__(self):
+        self.settings = load_settings()
+
+        self.root = tk.Tk()
+        self.root.title("RAI Launcher")
+
+        self.ui = MainUI(self.root, self)
+
+        self.ui.init_versions()
+        self.ui.init_bots()
+
+    def reload_bot_list(self):
+        self.ui.init_bots()
+
+    def save_settings(self):
+        from settings import save_settings
+        save_settings(self.settings.settings)
+
+    def run(self):
+        self.root.mainloop()
+
 
 if __name__ == "__main__":
-    run_launcher()
+    app = MainApp()
+    app.run()
