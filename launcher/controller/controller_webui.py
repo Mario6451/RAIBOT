@@ -5,11 +5,7 @@ import threading
 import webbrowser
 import psutil
 import os
-from dashboard import start_server
-
-# wherever you start the dashboard:
-start_server(ip="127.0.0.1", port=5000)
-
+from dashboard.server import start_server   # FIXED IMPORT
 
 
 class WebUIController:
@@ -22,19 +18,24 @@ class WebUIController:
     # ---------------------------------------------------------
     def start_server(self):
         cfg = self.main.settings.settings["web_ui"]
-        if not cfg["enabled"]:
+        if not cfg.get("enabled", True):
             return
 
+        ip = cfg.get("ip", "127.0.0.1")
+        port = cfg.get("port", 5000)
+
         threading.Thread(
-            target=lambda: server.start_server(cfg["ip"], cfg["port"]),
+            target=lambda: start_server(ip, port),
             daemon=True
         ).start()
+
+        self.ui.log_global(f"🌐 Web‑UI server started at http://{ip}:{port}")
 
     # ---------------------------------------------------------
     # Restart server
     # ---------------------------------------------------------
     def restart_server(self):
-        # Kill existing server
+        # Kill existing server processes
         for p in psutil.process_iter(["cmdline"]):
             cmd = p.info["cmdline"] or []
             if "server.py" in " ".join(cmd):
@@ -52,7 +53,10 @@ class WebUIController:
     # ---------------------------------------------------------
     def open_dashboard(self):
         cfg = self.main.settings.settings["web_ui"]
-        url = f"http://{cfg['ip']}:{cfg['port']}"
+        ip = cfg.get("ip", "127.0.0.1")
+        port = cfg.get("port", 5000)
+
+        url = f"http://{ip}:{port}"
         webbrowser.open(url)
         self.ui.log_launcher(f"Opened Web‑UI at {url}")
 

@@ -1,42 +1,62 @@
-import json
-import time
-import subprocess
 import os
+import time
+import json
+
+CMD_FILE = "botcmd.txt"
+STATE_FILE = "botstate.txt"
 
 
-def send_command(cmd, data=None):
-    if data is None:
-        data = {}
-    payload = json.dumps({"cmd": cmd, "data": data})
-    # TODO: write to your existing pipe/file/StdIn for AutoIt
-    # e.g. open a named pipe or file and write payload + newline
-    print("[autoit_bridge] SEND:", payload)
+def send_command(cmd_type, data=None):
+    """
+    Sends a command to AutoIt by writing JSON into botcmd.txt.
+    AutoIt reads it, executes it, then clears the file.
+    """
+    payload = {
+        "type": cmd_type,
+        "data": data or {}
+    }
 
+    with open(CMD_FILE, "w", encoding="utf-8") as f:
+        f.write(json.dumps(payload))
 
-def wait_for_ready(timeout=20):
-    # TODO: implement your existing ready signal from AutoIt
-    # For now, just sleep and assume ready
-    start = time.time()
-    while time.time() - start < timeout:
-        time.sleep(0.5)
-        return True
-    return False
+    return True
 
-
-def mouse_delta(dx, dy):
-    send_command("mouse_delta", {"dx": dx, "dy": dy})
-
-
-def right_down():
-    send_command("right_down", {})
-
-
-def right_up():
-    send_command("right_up", {})
-
-
-def toggle_shiftlock():
-    send_command("toggle_shiftlock", {})
 
 def read_bot_state():
-    return read_state()
+    """
+    Reads botstate.txt written by AutoIt.
+    Expected format:
+    {
+        "x": float,
+        "y": float,
+        "angle": float,
+        "ready": bool
+    }
+    """
+    if not os.path.exists(STATE_FILE):
+        return None
+
+    try:
+        with open(STATE_FILE, "r", encoding="utf-8") as f:
+            raw = f.read().strip()
+            if not raw:
+                return None
+            return json.loads(raw)
+    except:
+        return None
+
+
+def wait_for_ready(timeout=10):
+    """
+    Waits for AutoIt to signal readiness by writing:
+    {"ready": true}
+    """
+    start = time.time()
+
+    while time.time() - start < timeout:
+        state = read_bot_state()
+        if state and state.get("ready"):
+            return True
+        time.sleep(0.1)
+
+    return False
