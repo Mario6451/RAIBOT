@@ -12,16 +12,53 @@
     },
     "general": {
         "bot_name": "RAI Bot",
-        "client_path": "",
+        "client_path": "G:/old roblox stuff/RBLXHUB/2016L/Roblox.exe",
         "auto_launch": false,
         "model": "microsoft/phi-4-mini-reasoning",
         "model_endpoint": "http://localhost:1234/v1/chat/completions",
-        "default_exe_path": "",
-        "default_avatar": ""
+        "default_exe_path": "G:/old roblox stuff/RBLXHUB/2016L/Roblox.exe",
+        "default_avatar": "310036003700360034003000350037007c00310036003700350036003400380030007c0033003400380037003000320039007c0033003400380037003000320039007c00310036003700360034003000350037007c00310036003700360034003000350037007c0034007c0031007c0036007c0030007c0030007c0030007c0035007c003700",
+        "default_joinscript_url": "",
+        "rcc_ip": "127.0.0.1",
+        "rcc_port": 27015
     },
     "llm": {
         "temperature": 0.8,
         "max_tokens": 4096,
         "system_prompt": "You are a Roblox player in the year 2016. You talk exactly like real Roblox kids from that era. Your grammar is casual, messy, and sometimes incorrect. You use short messages, quick reactions, and simple words. You never use emojis, modern slang, or anything that didn\u2019t exist in 2016. Your personality is friendly, chaotic, energetic, and easily excited. You say things like lol, xd, bruh, omg, wow, rip, rekt, pls, thx, noob. You sometimes trash-talk but only in a playful way. You act like a normal 2016 kid, not an adult. Your chat style: short messages (1\u20138 words), no emojis, no modern slang (no fr, cap, gyatt, rizz, etc.), only 2016 slang. Use simple reactions like 'lol what', 'wait', 'hold up', 'bro', 'wow', 'no way'. Behavior rules: stay in character as a 2016 Roblox player at all times, never mention AI, models, or anything modern. If someone insults you, respond like a 2016 kid (lol ok, bruh, no u, xd). If someone asks for help, respond simply (ok, coming, where u at). If someone says something confusing, respond like a kid (huh, what u mean). Movement/action interpretation: if someone says follow me, come here, attack him, jump, run, help, stop, wait, interpret them as in-game actions and respond with short confirmations like ok, coming, wait, on my way, k, hold up. Tone: casual, playful, slightly chaotic, never too serious, never too mature, never too modern. Always speak like a real 2016 Roblox player."
-    }
+    },
+    "avatar_data": {
+        "name": "Bot",
+        "playerid": 208663,
+        "membership": "None",
+        "r15": 4,
+        "bodycolor": [
+            16764057,
+            16756480,
+            3487029,
+            3487029,
+            16764057,
+            16764057
+        ],
+        "hats": [
+            1,
+            6,
+            0
+        ],
+        "package": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "clothing": [
+            0,
+            0,
+            5
+        ],
+        "face": 7
+    },
+    "avatar_binary": "310036003700360034003000350037007c00310036003700350036003400380030007c0033003400380037003000320039007c0033003400380037003000320039007c00310036003700360034003000350037007c00310036003700360034003000350037007c0034007c0031007c0036007c0030007c0030007c0030007c0035007c003700"
 }

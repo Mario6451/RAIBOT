@@ -1,6 +1,6 @@
 import tkinter as tk
 from settings import load_settings
-from ui.settings_ui import SettingsUI
+from ui.settings.settings_ui import SettingsUI
 
 
 def main():

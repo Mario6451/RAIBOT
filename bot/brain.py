@@ -11,10 +11,16 @@ from training import (
     Learner
 )
 
-from .movement import MovementController
-from .chat import ChatModule
-from .perception import PerceptionModule
-from .state import BotState
+from ai.vision import VisionSystem
+from ai.perception import PerceptionSystem
+from ai.player_detector import PlayerDetector
+from ai.chat_sniffer import ChatSniffer
+from ai.movement import MovementController
+from ai.state import BotState
+from ai.personality import Personality
+from ai.controller import InputController
+from ai.camera import CameraController
+from ai.chat import ChatSystem
 
 from pathfinding import (
     make_flat_grid,
