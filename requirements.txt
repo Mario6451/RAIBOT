@@ -1,0 +1,14 @@
+requests
+tkintertable
+pyautogui
+keyboard
+mouse
+numpy
+opencv-python
+flask
+psutil
+pywin32
+Pillow
+flask-socketio
+python-socketio
+python-engineio

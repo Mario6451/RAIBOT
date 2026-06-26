@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RAIBOT Web UI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="raibot-ui">
+
+        <!-- LEFT SIDEBAR -->
+        <div id="left-sidebar">
+            <div class="sidebar-section" id="left-top-tabs">
+                <h3>Bot Panels</h3>
+                <button onclick="switchMainTab('Dashboard')">Dashboard</button>
+                <button onclick="switchMainTab('Bots')">Bots</button>
+                <button onclick="switchMainTab('Training')">Training</button>
+                <button onclick="switchMainTab('Analytics')">Analytics</button>
+            </div>
+
+            <div class="sidebar-section" id="left-bottom-tools">
+                <h3>Bot Tools</h3>
+                <button onclick="switchMainTab('Pathfinding')">Pathfinding</button>
+                <button onclick="switchMainTab('Camera')">Camera</button>
+                <button onclick="switchMainTab('Personality')">Personality</button>
+                <button onclick="switchMainTab('Settings')">Settings</button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="main-content">
+            <div id="main-tabs">
+                <button onclick="switchMainTab('Dashboard')">Dashboard</button>
+                <button onclick="switchMainTab('Bots')">Bot Manager</button>
+                <button onclick="switchMainTab('Logs')">Logs</button>
+                <button onclick="switchMainTab('Chat')">Chat Monitor</button>
+                <button onclick="switchMainTab('Map')">Map</button>
+            </div>
+
+            <div id="main-panel">
+                <h2>Welcome to RAIBOT</h2>
+                <p>Select a tab to begin controlling your bots.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div id="right-sidebar">
+            <div class="sidebar-section" id="right-top-tabs">
+                <h3>Server Info</h3>
+                <p id="server-status">Status: Offline</p>
+                <p id="bot-count">Bots: 0</p>
+            </div>
+
+            <div class="sidebar-section" id="mini-map">
+                <h3>Bot Mini Map</h3>
+                <canvas id="map-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- BOTTOM LOGS -->
+        <div id="bottom-logs">
+            <h3>Output Logs</h3>
+            <pre id="log-output"></pre>
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

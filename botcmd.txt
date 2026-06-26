@@ -1,0 +1,1 @@
+{"type": "move_to", "x": 10.409274923985201, "y": 6.538742349619401, "z": -33.73220944012682, "style": {"strafe_rate": 0.2, "jump_rate": 0.1, "zigzag_rate": 0.15, "camera_wiggle_rate": 0.3}}
