@@ -1,40 +1,18 @@
-# bot_runtime.py
-
 import time
-
-from bot.brain import AIBrain
-from bot.bot_loader import load_bot_profile
-from bot.bot_launcher import launch_client
-from autoit_bridge import wait_for_ready
-import server
 import os, sys
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-
+from brain import AIBrain
+from bot.bot_loader import load_bot_profile
+from bot.bot_launcher import launch_client, build_join_url
+from autoit_bridge import wait_for_ready
+import server
 
 
 def run_bot(config):
-    """
-    config = {
-        "bot_name": str,
-        "server_ip": str,
-        "server_port": int,
-        "settings": {
-            "launcher": {
-                "client_path": str,
-                "joinscript_url": str,
-                "place_id": str
-            },
-            "performance": {...},
-            "movement": {...},
-            "training": {...}
-        }
-    }
-    """
-
     bot_name = config["bot_name"]
     server_ip = config["server_ip"]
     server_port = config["server_port"]
@@ -45,20 +23,12 @@ def run_bot(config):
     joinscript_url = launcher["joinscript_url"]
     place_id = int(launcher["place_id"])
 
-    # ---------------------------------------------------------
-    # LOAD BOT PROFILE
-    # ---------------------------------------------------------
     profile = load_bot_profile(bot_name)
     username = profile["Account"]["username"]
     user_id = profile["Account"]["user_id"]
     membership = profile["Account"].get("membership", 0)
     avatar_binary = profile["Account"]["avatar_binary"]
 
-    print(f"[Runtime] Loaded profile: {username} ({user_id})")
-
-    # ---------------------------------------------------------
-    # BUILD JOIN URL
-    # ---------------------------------------------------------
     join_url = build_join_url(
         base_url=joinscript_url,
         place_id=place_id,
@@ -70,26 +40,12 @@ def run_bot(config):
         avatar_binary=avatar_binary
     )
 
-    print(f"[Runtime] Join URL: {join_url}")
-
-    # ---------------------------------------------------------
-    # LAUNCH CLIENT
-    # ---------------------------------------------------------
     launch_client(client_path, join_url)
 
-    # ---------------------------------------------------------
-    # WAIT FOR AUTOIT
-    # ---------------------------------------------------------
-    print("[Runtime] Waiting for AutoIt...")
     if not wait_for_ready(timeout=20):
-        print("[Runtime] AutoIt did not signal ready. Aborting.")
+        print("[Runtime] AutoIt did not signal ready.")
         return
 
-    print("[Runtime] AutoIt ready.")
-
-    # ---------------------------------------------------------
-    # START AI BRAIN
-    # ---------------------------------------------------------
     brain = AIBrain(
         bot_folder=f"bots/{bot_name}",
         settings=settings,
@@ -99,11 +55,6 @@ def run_bot(config):
     tick_rate = settings["performance"]["tick_rate"]
     tick_delay = 1.0 / tick_rate
 
-    print(f"[Runtime] Bot '{username}' started with tick rate {tick_rate} TPS.")
-
-    # ---------------------------------------------------------
-    # MAIN LOOP
-    # ---------------------------------------------------------
     while True:
         try:
             brain.update()

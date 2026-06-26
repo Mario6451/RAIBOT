@@ -1,145 +1,139 @@
+# launcher/ui/ui_launcher_tab.py
+
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk
+from tkinter import scrolledtext
 
 
-def build_launcher_tab(ui):
-    frame = ui.launcher_tab
+class LauncherTab(ttk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
 
-    title = ttk.Label(frame, text="🤖 Roblox AI Player", font=("Segoe UI", 20, "bold"))
-    title.pack(pady=10)
+        self.controller = controller
+        self._build_ui()
 
-    status_frame = ttk.Frame(frame)
-    status_frame.pack(pady=10)
+    # ---------------------------------------------------------
+    # UI BUILD
+    # ---------------------------------------------------------
+    def _build_ui(self):
+        # Left panel
+        left = ttk.Frame(self)
+        left.pack(side="left", fill="y", padx=10, pady=10)
 
-    ui.status_label = ttk.Label(status_frame, text="Status: Idle", font=("Segoe UI", 11))
-    ui.status_label.grid(row=0, column=0, padx=10)
+        # Bot selector
+        ttk.Label(left, text="Bot:").pack(anchor="w")
+        self.bot_selector = ttk.Combobox(left, state="readonly")
+        self.bot_selector.pack(fill="x")
+        self.bot_selector.bind("<<ComboboxSelected>>", self.controller.on_bot_selected)
 
-    ui.autoit_label = ttk.Label(status_frame, text="AutoIt: ❌", font=("Segoe UI", 11))
-    ui.autoit_label.grid(row=0, column=1, padx=10)
+        # Start / Stop / Restart
+        ttk.Button(left, text="▶ Start Bot", command=self.controller.start_bot).pack(fill="x", pady=2)
+        ttk.Button(left, text="⏹ Stop Bot", command=self.controller.stop_bot).pack(fill="x", pady=2)
+        ttk.Button(left, text="🔄 Restart Bot", command=self.controller.restart_bot).pack(fill="x", pady=2)
 
-    ui.fps_label = ttk.Label(status_frame, text="Tick Rate: --", font=("Segoe UI", 11))
-    ui.fps_label.grid(row=0, column=2, padx=10)
+        ttk.Separator(left).pack(fill="x", pady=10)
 
-    ui.cpu_label = ttk.Label(status_frame, text="CPU: --%", font=("Segoe UI", 11))
-    ui.cpu_label.grid(row=1, column=0, padx=10)
+        # Client path
+        ttk.Label(left, text="Roblox Client:").pack(anchor="w")
+        self.client_path_var = tk.StringVar()
+        ttk.Entry(left, textvariable=self.client_path_var).pack(fill="x")
+        ttk.Button(left, text="Browse", command=self.controller.browse_client_path).pack(fill="x", pady=2)
 
-    ui.mem_label = ttk.Label(status_frame, text="RAM: -- MB", font=("Segoe UI", 11))
-    ui.mem_label.grid(row=1, column=1, padx=10)
+        # JoinScript
+        ttk.Label(left, text="JoinScript:").pack(anchor="w")
+        self.joinscript_var = tk.StringVar()
+        ttk.Entry(left, textvariable=self.joinscript_var).pack(fill="x")
+        ttk.Button(left, text="Browse", command=self.controller.browse_joinscript).pack(fill="x", pady=2)
 
-    bot_frame = ttk.Frame(frame)
-    bot_frame.pack(pady=5)
+        ttk.Separator(left).pack(fill="x", pady=10)
 
-    ttk.Label(bot_frame, text="Bot:", font=("Segoe UI", 10)).grid(row=0, column=0, padx=5)
-    ui.bot_selector = ttk.Combobox(bot_frame, values=["Bot 1"], state="readonly", width=20)
-    ui.bot_selector.current(0)
-    ui.bot_selector.grid(row=0, column=1, padx=5)
+        # Server IP / Port
+        ttk.Label(left, text="Server IP:").pack(anchor="w")
+        self.server_ip_var = tk.StringVar()
+        ttk.Entry(left, textvariable=self.server_ip_var).pack(fill="x")
 
-    ui.add_bot_btn = ttk.Button(bot_frame, text="➕ Add Bot")
-    ui.add_bot_btn.grid(row=0, column=2, padx=5)
+        ttk.Label(left, text="Server Port:").pack(anchor="w")
+        self.server_port_var = tk.StringVar()
+        ttk.Entry(left, textvariable=self.server_port_var).pack(fill="x")
 
-    ui.edit_bot_btn = ttk.Button(bot_frame, text="✏️ Edit Bot")
-    ui.edit_bot_btn.grid(row=0, column=3, padx=5)
+        ttk.Separator(left).pack(fill="x", pady=10)
 
-    ttk.Label(bot_frame, text="Client EXE:", font=("Segoe UI", 10)).grid(row=1, column=0, padx=5)
-    ui.client_path_var = tk.StringVar(value=ui.load_setting("client_path", ""))
-    ui.client_path_entry = ttk.Entry(bot_frame, textvariable=ui.client_path_var, width=40)
-    ui.client_path_entry.grid(row=1, column=1, padx=5)
+        # Web‑UI
+        ttk.Label(left, text="Web‑UI:").pack(anchor="w")
+        ttk.Button(left, text="🌐 Open Dashboard", command=self.controller.open_dashboard).pack(fill="x", pady=2)
+        ttk.Button(left, text="🔄 Restart Web‑UI", command=self.controller.restart_server).pack(fill="x", pady=2)
+        ttk.Button(left, text="📁 Logs Folder", command=self.controller.open_logs).pack(fill="x", pady=2)
 
-    def browse_client():
-        path = filedialog.askopenfilename(
-            title="Select Roblox Client Executable",
-            filetypes=[("Executable", "*.exe")]
-        )
-        if path:
-            ui.client_path_var.set(path)
-            ui.save_setting("client_path", path)
+        ttk.Separator(left).pack(fill="x", pady=10)
 
-    ui.client_browse_btn = ttk.Button(bot_frame, text="📂 Browse", command=browse_client)
-    ui.client_browse_btn.grid(row=1, column=2, padx=5)
+        # Status
+        ttk.Label(left, text="Status:").pack(anchor="w")
+        self.status_var = tk.StringVar(value="Idle")
+        ttk.Label(left, textvariable=self.status_var).pack(anchor="w")
 
-    ttk.Label(bot_frame, text="JoinScript URL:", font=("Segoe UI", 10)).grid(row=2, column=0, padx=5)
-    ui.joinscript_var = tk.StringVar(
-        value=ui.load_setting("joinscript_url", "https://www.rbolock.tk/game/join2017.php")
-    )
-    ui.joinscript_entry = ttk.Entry(bot_frame, textvariable=ui.joinscript_var, width=40)
-    ui.joinscript_entry.grid(row=2, column=1, padx=5)
+        ttk.Label(left, text="CPU:").pack(anchor="w")
+        self.cpu_var = tk.StringVar(value="0%")
+        ttk.Label(left, textvariable=self.cpu_var).pack(anchor="w")
 
-    def save_joinscript_url(*_):
-        ui.save_setting("joinscript_url", ui.joinscript_var.get())
+        ttk.Label(left, text="RAM:").pack(anchor="w")
+        self.mem_var = tk.StringVar(value="0 MB")
+        ttk.Label(left, textvariable=self.mem_var).pack(anchor="w")
 
-    ui.joinscript_var.trace_add("write", save_joinscript_url)
+        ttk.Label(left, text="AutoIt:").pack(anchor="w")
+        self.autoit_var = tk.StringVar(value="Disconnected")
+        ttk.Label(left, textvariable=self.autoit_var).pack(anchor="w")
 
-    server_frame = ttk.Frame(frame)
-    server_frame.pack(pady=5)
+        # ---------------------------------------------------------
+        # RIGHT SIDE — MAP + LOGS
+        # ---------------------------------------------------------
+        right = ttk.Frame(self)
+        right.pack(side="left", fill="both", expand=True, padx=10, pady=10)
 
-    ttk.Label(server_frame, text="Server IP:", font=("Segoe UI", 10)).grid(row=0, column=0, padx=5)
-    ui.server_ip_var = tk.StringVar(value="127.0.0.1")
-    ui.server_ip_entry = ttk.Entry(server_frame, textvariable=ui.server_ip_var, width=15)
-    ui.server_ip_entry.grid(row=0, column=1, padx=5)
+        # Map preview
+        ttk.Label(right, text="Map Preview:").pack(anchor="w")
+        self.map_canvas = tk.Canvas(right, width=300, height=300, bg="#1e1e1e")
+        self.map_canvas.pack(pady=5)
 
-    ttk.Label(server_frame, text="Port:", font=("Segoe UI", 10)).grid(row=0, column=2, padx=5)
-    ui.server_port_var = tk.StringVar(value="5000")
-    ui.server_port_entry = ttk.Entry(server_frame, textvariable=ui.server_port_var, width=6)
-    ui.server_port_entry.grid(row=0, column=3, padx=5)
+        # Logs
+        ttk.Label(right, text="Launcher Log:").pack(anchor="w")
+        self.log_box = scrolledtext.ScrolledText(right, height=12, state="disabled")
+        self.log_box.pack(fill="both", expand=True)
 
-    ttk.Label(server_frame, text="Place ID:", font=("Segoe UI", 10)).grid(row=1, column=0, padx=5)
-    ui.place_id_var = tk.StringVar(value=ui.load_setting("place_id", "0"))
-    ui.place_id_entry = ttk.Entry(server_frame, textvariable=ui.place_id_var, width=15)
-    ui.place_id_entry.grid(row=1, column=1, padx=5)
+    # ---------------------------------------------------------
+    # UI UPDATE METHODS
+    # ---------------------------------------------------------
+    def update_status(self, text):
+        self.status_var.set(text)
 
-    def save_place_id(*_):
-        ui.save_setting("place_id", ui.place_id_var.get())
+    def update_cpu(self, value):
+        self.cpu_var.set(f"{value:.1f}%")
 
-    ui.place_id_var.trace_add("write", save_place_id)
+    def update_mem(self, value):
+        self.mem_var.set(f"{value:.1f} MB")
 
-    btn_frame = ttk.Frame(frame)
-    btn_frame.pack(pady=10)
+    def update_autoit(self, connected):
+        self.autoit_var.set("Connected" if connected else "Disconnected")
 
-    ui.start_btn = ttk.Button(btn_frame, text="▶️ Start", command=ui.start_bot)
-    ui.start_btn.grid(row=0, column=0, padx=10)
+    def update_map(self, bot_positions, player_positions):
+        self.map_canvas.delete("all")
 
-    ui.stop_btn = ttk.Button(btn_frame, text="⏹️ Stop", command=ui.stop_bot)
-    ui.stop_btn.grid(row=0, column=1, padx=10)
+        # Draw bots
+        for x, y, angle, name in bot_positions:
+            self.map_canvas.create_oval(x-5, y-5, x+5, y+5, fill="cyan")
+            self.map_canvas.create_text(x, y-10, text=name, fill="white")
 
-    ui.restart_btn = ttk.Button(btn_frame, text="🔁 Restart", command=ui.restart_bot)
-    ui.restart_btn.grid(row=0, column=2, padx=10)
+        # Draw players
+        for x, y in player_positions:
+            self.map_canvas.create_oval(x-5, y-5, x+5, y+5, fill="yellow")
 
-    ui.refresh_btn = ttk.Button(btn_frame, text="🔄 Refresh", command=ui.refresh_bots)
-    ui.refresh_btn.grid(row=0, column=3, padx=10)
+    def update_preview_text(self, text):
+        self.log_launcher(text)
 
-    extra_btn_frame = ttk.Frame(frame)
-    extra_btn_frame.pack(pady=5)
+    def log_launcher(self, msg):
+        self.log_box.configure(state="normal")
+        self.log_box.insert("end", msg + "\n")
+        self.log_box.configure(state="disabled")
+        self.log_box.see("end")
 
-    ui.open_dashboard_btn = ttk.Button(extra_btn_frame, text="📊 Web‑UI", command=ui.open_dashboard)
-    ui.open_dashboard_btn.grid(row=0, column=0, padx=10)
-
-    ui.open_logs_btn = ttk.Button(extra_btn_frame, text="📁 Logs Folder", command=ui.open_logs_folder)
-    ui.open_logs_btn.grid(row=0, column=1, padx=10)
-
-    ui.launcher_log = tk.Text(frame, height=8, width=130, state="disabled")
-    ui.launcher_log.pack(pady=10)
-
-    def log_launcher(text):
-        ui.launcher_log.config(state="normal")
-        ui.launcher_log.insert("end", text + "\n")
-        ui.launcher_log.see("end")
-        ui.launcher_log.config(state="disabled")
-
-    ui.log_launcher = log_launcher
-
-    def update_status(text):
-        ui.status_label.config(text=f"Status: {text}")
-
-    def update_autoit(connected: bool):
-        ui.autoit_label.config(text=f"AutoIt: {'✅' if connected else '❌'}")
-
-    def update_cpu(val):
-        ui.cpu_label.config(text=f"CPU: {val:.1f}%")
-
-    def update_mem(val):
-        ui.mem_label.config(text=f"RAM: {val:.1f} MB")
-
-    ui.update_status = update_status
-    ui.update_autoit = update_autoit
-    ui.update_cpu = update_cpu
-    ui.update_mem = update_mem
+    def log_global(self, msg):
+        self.log_launcher("[GLOBAL] " + msg)
