@@ -7,8 +7,8 @@ import os
 import psutil
 from tkinter import filedialog
 
-from bot_runtime import run_bot
-from dashboard import update_bots, update_map, add_log
+from bot.bot_runtime import run_bot
+from dashboard.server import update_bots, update_map, add_log
 
 # examples:
 update_bots(bots_dict)

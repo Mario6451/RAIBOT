@@ -2,11 +2,18 @@
 
 import time
 
-from bot_loader import load_bot_profile
-from bot_launcher import build_join_url, launch_client
-from ai.brain import AIBrain
+from bot.brain import AIBrain
+from bot.bot_loader import load_bot_profile
+from bot.bot_launcher import launch_client
 from autoit_bridge import wait_for_ready
 import server
+import os, sys
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+
 
 
 def run_bot(config):
