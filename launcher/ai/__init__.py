@@ -1,2 +1,1 @@
-# AI package initializer
-from .brain import AIBrain as AI
+# launcher.ai package

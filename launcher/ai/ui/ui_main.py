@@ -1,113 +1,120 @@
-# ui/ui_main.py
-
 import tkinter as tk
 from tkinter import ttk
 
-# Existing UI tabs
-from ui.ui_launcher_tab import LauncherTab
-from ui.ui_bots_tab import BotsTab
-from ui.ui_avatar_converter_tab import AvatarConverterTab
+# -----------------------------
+# Corrected Imports (Final)
+# -----------------------------
 
-# New AI tabs
-from ui.map.ai_map_tab import AIMapTab
-from ui.ai.ai_command_tab import AICommandTab
-from ui.ai.bot_inspector_tab import BotInspectorTab
-from ui.ai.ai_logs_tab import AILogsTab
-from ui.ai.path_debug_tab import PathDebugTab
-from ui.ai.bot_manager_tab import BotManagerTab
-from ui.ai.ai_profiler_tab import AIProfilerTab
+# Main UI Tabs
+from launcher.ai.ui.ui_launcher_tab import LauncherTab
+from launcher.ai.ui.ui_bots_tab import BotsTab
+from launcher.ai.ui.ui_avatar_converter_tab import AvatarConverterTab
+from launcher.ai.ui.ui_logs_tab import AILogsTab
+from launcher.ai.ui.ui_settings_tab import SettingsTab
+from launcher.ai.ui.ui_plugins_tab import PluginsTab
+from launcher.ai.ui.ui_process_tab import ProcessTab
+from launcher.ai.ui.ui_window_tab import WindowTab
+from launcher.ai.ui.ui_map_tab import MapTab
+from launcher.ai.ui.ui_ai_tab import AITab
 
-# Controllers
-from controller.controller_launcher import LauncherController
-from controller.controller_bots import BotsController
-from controller.controller_avatar_converter import AvatarConverterController
+# AI Tabs
+from launcher.ai.ui.ai.ai_command_tab import AICommandTab
+from launcher.ai.ui.ai.bot_inspector_tab import BotInspectorTab
+from launcher.ai.ui.ai.ai_logs_tab import AILogsTab as AILogsTab_AI
+from launcher.ai.ui.ai.path_debug_tab import PathDebugTab
+from launcher.ai.ui.ai.bot_manager_tab import BotManagerTab
+from launcher.ai.ui.ai.ai_profiler_tab import AIProfilerTab
+
+# Map
+from launcher.ai.ui.map.ai_map_tab import AIMapTab
+
+# Control Center Tabs
+from launcher.ai.ui.edit_bot_tab import EditBotTab
+from launcher.ai.ui.personality_editor_tab import PersonalityEditorTab
+from launcher.ai.ui.director_control_tab import DirectorControlTab
+
+# Panels
+from launcher.ai.ui.edit_bot_panel import EditBotPanel
+from launcher.ai.ui.personality_editor import PersonalityEditor
+from launcher.ai.ui.director_control_panel import DirectorControlPanel
 
 
-class MainUI:
-    def __init__(self, root, main):
-        self.root = root
-        self.main = main
+# -----------------------------
+# Main UI Class
+# -----------------------------
 
-        # Notebook container
-        self.tabs = ttk.Notebook(root)
-        self.tabs.pack(fill="both", expand=True)
+class MainUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
 
-        # Controllers
-        self.launcher_controller = LauncherController(main)
-        self.bots_controller = BotsController(main)
-        self.avatar_converter_controller = AvatarConverterController(main)
+        self.title("Roblox AI Player - Launcher")
+        self.geometry("1200x800")
 
-        # NEW: AI controllers from main
-        self.controller_ai = main.controller_ai
-        self.controller_bots = main.controller_bots
+        # Notebook (Tabs)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill="both", expand=True)
 
-        # ---------------------------------------------------------
-        # EXISTING TABS
-        # ---------------------------------------------------------
-        self.launcher = LauncherTab(self.tabs, self.launcher_controller)
-        self.bots = BotsTab(self.tabs, self.bots_controller)
-        self.avatar_converter = AvatarConverterTab(self.tabs, self.avatar_converter_controller)
+        # -----------------------------
+        # Create Tabs
+        # -----------------------------
 
-        self.tabs.add(self.launcher, text="Launcher")
-        self.tabs.add(self.bots, text="Bots")
-        self.tabs.add(self.avatar_converter, text="Avatar Converter")
+        self.launcher_tab = LauncherTab(self.notebook)
+        self.bots_tab = BotsTab(self.notebook)
+        self.avatar_converter_tab = AvatarConverterTab(self.notebook)
+        self.logs_tab = AILogsTab(self.notebook)
+        self.settings_tab = SettingsTab(self.notebook)
+        self.plugins_tab = PluginsTab(self.notebook)
+        self.process_tab = ProcessTab(self.notebook)
+        self.window_tab = WindowTab(self.notebook)
+        self.map_tab = MapTab(self.notebook)
+        self.ai_tab = AITab(self.notebook)
 
-        # ---------------------------------------------------------
-        # NEW AI TABS
-        # ---------------------------------------------------------
+        # AI Tabs
+        self.ai_command_tab = AICommandTab(self.notebook)
+        self.bot_inspector_tab = BotInspectorTab(self.notebook)
+        self.ai_logs_tab2 = AILogsTab_AI(self.notebook)
+        self.path_debug_tab = PathDebugTab(self.notebook)
+        self.bot_manager_tab = BotManagerTab(self.notebook)
+        self.ai_profiler_tab = AIProfilerTab(self.notebook)
 
-        # AI Map
-        self.ai_map_tab = AIMapTab(self.tabs, self.controller_ai)
-        self.tabs.add(self.ai_map_tab, text="AI Map")
+        # Control Center
+        self.edit_bot_tab = EditBotTab(self.notebook)
+        self.personality_editor_tab = PersonalityEditorTab(self.notebook)
+        self.director_control_tab = DirectorControlTab(self.notebook)
 
-        # AI Command Center
-        self.ai_command_tab = AICommandTab(self.tabs, self.controller_ai, self.controller_bots)
-        self.tabs.add(self.ai_command_tab, text="AI Command")
+        # -----------------------------
+        # Add Tabs to Notebook
+        # -----------------------------
 
-        # Bot Inspector
-        self.bot_inspector_tab = BotInspectorTab(self.tabs, self.controller_ai)
-        self.tabs.add(self.bot_inspector_tab, text="Bot Inspector")
+        self.notebook.add(self.launcher_tab, text="Launcher")
+        self.notebook.add(self.bots_tab, text="Bots")
+        self.notebook.add(self.avatar_converter_tab, text="Avatar Converter")
+        self.notebook.add(self.logs_tab, text="Logs")
+        self.notebook.add(self.settings_tab, text="Settings")
+        self.notebook.add(self.plugins_tab, text="Plugins")
+        self.notebook.add(self.process_tab, text="Processes")
+        self.notebook.add(self.window_tab, text="Window")
+        self.notebook.add(self.map_tab, text="Map")
+        self.notebook.add(self.ai_tab, text="AI")
 
-        # AI Logs
-        self.ai_logs_tab = AILogsTab(self.tabs, self.controller_ai)
-        self.tabs.add(self.ai_logs_tab, text="AI Logs")
+        # AI Tabs
+        self.notebook.add(self.ai_command_tab, text="AI Commands")
+        self.notebook.add(self.bot_inspector_tab, text="Bot Inspector")
+        self.notebook.add(self.ai_logs_tab2, text="AI Logs")
+        self.notebook.add(self.path_debug_tab, text="Path Debug")
+        self.notebook.add(self.bot_manager_tab, text="Bot Manager")
+        self.notebook.add(self.ai_profiler_tab, text="AI Profiler")
 
-        # Pathfinding Debugger
-        self.path_debug_tab = PathDebugTab(self.tabs, self.controller_ai)
-        self.tabs.add(self.path_debug_tab, text="Path Debugger")
+        # Control Center
+        self.notebook.add(self.edit_bot_tab, text="Edit Bot")
+        self.notebook.add(self.personality_editor_tab, text="Personality Editor")
+        self.notebook.add(self.director_control_tab, text="Director Control")
 
-        # Bot Manager
-        self.bot_manager_tab = BotManagerTab(self.tabs, self.controller_ai, self.controller_bots)
-        self.tabs.add(self.bot_manager_tab, text="Bot Manager")
 
-        # AI Profiler
-        self.ai_profiler_tab = AIProfilerTab(self.tabs, self.controller_ai)
-        self.tabs.add(self.ai_profiler_tab, text="AI Profiler")
+# -----------------------------
+# Entry Point
+# -----------------------------
 
-    # ---------------------------------------------------------
-    # INITIALIZE VERSION DROPDOWNS
-    # ---------------------------------------------------------
-    def init_versions(self):
-        versions = self.main.settings.settings["launcher"]["versions"].split(",")
-
-        self.launcher.version_dropdown["values"] = versions
-        self.launcher.version_var.set(self.main.settings.settings["launcher"]["version"])
-
-        self.avatar_converter.version_dropdown["values"] = versions
-        self.avatar_converter.version_var.set(self.main.settings.settings["launcher"]["version"])
-
-    # ---------------------------------------------------------
-    # INITIALIZE BOT LIST
-    # ---------------------------------------------------------
-    def init_bots(self):
-        import os
-        bots = []
-
-        if os.path.exists("bots"):
-            for name in os.listdir("bots"):
-                if os.path.isdir(os.path.join("bots", name)):
-                    bots.append(name)
-
-        self.launcher.bot_selector["values"] = bots
-        if bots:
-            self.launcher.bot_selector.set(bots[0])
+if __name__ == "__main__":
+    app = MainUI()
+    app.mainloop()
